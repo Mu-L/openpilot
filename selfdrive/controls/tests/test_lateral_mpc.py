@@ -1,19 +1,21 @@
 import unittest
 import numpy as np
 from selfdrive.controls.lib.lateral_mpc import libmpc_py
-from selfdrive.controls.lib.drive_helpers import MPC_N, CAR_ROTATION_RADIUS
+from selfdrive.controls.lib.drive_helpers import LAT_MPC_N, CAR_ROTATION_RADIUS
 
 
 def run_mpc(v_ref=30., x_init=0., y_init=0., psi_init=0., curvature_init=0.,
             lane_width=3.6, poly_shift=0.):
 
   libmpc = libmpc_py.libmpc
-  libmpc.init(1.0, 1.0, 1.0)
+  libmpc.init()
+  libmpc.set_weights(1., 1., 1.)
+
 
   mpc_solution = libmpc_py.ffi.new("log_t *")
 
-  y_pts = poly_shift * np.ones(MPC_N + 1)
-  heading_pts = np.zeros(MPC_N + 1)
+  y_pts = poly_shift * np.ones(LAT_MPC_N + 1)
+  heading_pts = np.zeros(LAT_MPC_N + 1)
 
 
   cur_state = libmpc_py.ffi.new("state_t *")
